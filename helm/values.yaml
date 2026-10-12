@@ -1,0 +1,21 @@
+backup:
+  schedule: "0 2 * * *"
+  retention:
+    keepDaily: 14
+encryption:
+  enabled: true
+environment: prod
+instances: 2
+maintenance:
+  dayOfWeek: monday
+  timeOfDay: "23:00:00"
+plan: standard-2
+postgres:
+  majorVersion: 18
+  pgSettings:
+    archiveTimeout: 300
+security:
+  allowedGroups: []
+  allowedUsers: []
+serviceLevel: besteffort
+version: 26

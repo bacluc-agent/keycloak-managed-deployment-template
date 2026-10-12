@@ -1,3 +1,3 @@
 # env-secret.yaml contains no real values; secrets are injected via
 # environment variables at deploy time.
-!/templates/**/*
+!/templates/*

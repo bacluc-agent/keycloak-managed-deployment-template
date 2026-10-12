@@ -29,10 +29,10 @@ examples/                 not synced
   vault/                  the Secret from the Vault Secrets Operator instead
 ```
 
-ArgoCD directory sources are not recursive. `keycloak/` therefore contributes only
-the manifests directly inside it, and `keycloak/config/` is listed as a second
+ArgoCD directory sources are not recursive. `helm` therefore contributes only
+the manifests directly inside it, and `helm` is listed as a second
 source. A manifest put in a deeper subdirectory is silently ignored, so keep new
-resources flat in `keycloak/` or give them their own source. `bootstrap/` is outside
+resources flat in `helm` or give them their own source. `bootstrap/` is outside
 both sources on purpose: it holds the two files that must never be applied by a
 sync.
 
@@ -52,9 +52,9 @@ sync.
 
 ## Setup
 
-1. Replace every `<placeholder>` in `keycloak/` and `bootstrap/`. The ones that
+1. Replace every `<placeholder>` in `helm` and `bootstrap/`. The ones that
    matter are the FQDN, the namespace, the admin group and the Git repository URL.
-2. Copy your realm JSONs into `keycloak/config/`, list them in
+2. Copy your realm JSONs into `helm`, list them in
    `config/kustomization.yaml` and delete `realm-example.json`.
 3. Create the `keycloak-env` Secret in the namespace, by hand once or from your
    secret store. See `bootstrap/secret.example.yaml` and `examples/`.

@@ -15,8 +15,15 @@ metadata:
   namespace: <your-namespace>
 spec:
   parameters:
-    # Number of Keycloak servers, 0 to 3. More than one only makes sense together
-    # with serviceLevel: guaranteed.
+
+    monitoring:
+      # VSHN will start repairing the keycloak when it is broken.
+      # This email gets an early warning that you might react before it really breaks.
+      # Make sure to also set it in postgresqlParameters
+      email: your@mail.com
+
+    # Number of Keycloak servers, 0 to 3.
+    # If you want a service level, you must also set the serviceLevel: guaranteed
     instances: 1
 
     service:
@@ -31,6 +38,7 @@ spec:
 
       # besteffort or guaranteed. guaranteed buys a VSHN SLA and is the
       # prerequisite for running more than one instance.
+      # Make sure to also set it in postgresqlParameters
       serviceLevel: besteffort
 
       adminConsole:
@@ -58,12 +66,25 @@ spec:
       # The bundled PostgreSQL. It inherits the plan and instance count from this
       # claim unless overridden here.
       postgreSQLParameters:
+        # If your cluster supports encrypted ssd disk. It is a keycloak, potentially with client secrets.
+        # This is given on e.g., APPUiO
+        encryption:
+          enabled: true
+        monitoring:
+          # VSHN will start repairing the keycloak when it is broken.
+          # This email gets an early warning that you might react before it really breaks.
+          email: your@mail.com
+        # 1 or 3. If you want the keycloak highly available, you should also set the postgres to highly available.
         instances: 1
         service:
+          # Explicitly state the major postgres version you want.
+          majorVersion: "18"
           pgSettings:
             # Forces a WAL segment every 5 minutes, so a restore never trails
             # reality by more than that even when write traffic is low.
             archive_timeout: "300"
+          # besteffort or guaranteed. guaranteed buys a VSHN SLA.
+          serviceLevel: besteffort
 
     size:
       # standard-2 (500m CPU, 2Gi RAM), standard-4 (1 CPU, 4Gi RAM), both 16Gi disk.
@@ -87,6 +108,8 @@ spec:
     maintenance:
       # UTC. VSHN patches Keycloak and PostgreSQL inside this window, which implies
       # a restart. Pick a quiet hour.
+      # For test instances, set it to wednesday at 09:00: Then you have the most time to fix the problem or pause the update
+      # before the prod instance is updated.
       dayOfWeek: monday
       timeOfDay: "23:00:00"
       # Pins the Keycloak image and stops automatic upgrades. An escape hatch for
